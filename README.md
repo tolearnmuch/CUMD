@@ -2,7 +2,7 @@
 
 This is the released code and models for CUMD.
 
-![image](https://github.com/Anonymous-Submission-ID/Anonymous-Submission/blob/main/separating_active_patterns/figs/Figure%202.png)
+![image](https://github.com/tolearnmuch/CUMD/blob/main/figs/Figure%201_9.png)
 
 ## 1. Important updates
 
