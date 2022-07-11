@@ -75,7 +75,7 @@ python ./tools/test_depth_kth.py --load_ckpt res101.pth --backbone resnext101
 cd ..
 ```
 
-* Run the code below for converting images into tfrecords, the details can be referred to [SAVP](https://github.com/tolearnmuch/ASVP).
+* Run the code below for converting images into tfrecords, the details can be referred to [ASVP](https://github.com/tolearnmuch/ASVP).
 
 ```
 bash data/kth2tfrecords.sh 
