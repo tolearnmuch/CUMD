@@ -53,7 +53,7 @@ Please refer to the installing of [Pre-trained Depth Estimation](https://github.
 
 Here the virtual env is created on Ubuntu.
 
-### 2.3. Dataset
+### 2.3. Dataset Preparation
 
 Datasets contain: [KTH human action dataset](https://www.csc.kth.se/cvap/actions/) & [BAIR action-free robot pushing dataset](https://sites.google.com/view/sna-visual-mpc/). For reproducing the experiment, the processed dataset should be downloaded:
 
@@ -67,29 +67,22 @@ bash data/preprocess_kth.sh
 
 Then all preprocessed and subsequence splitted frames are obtained in ./data/kth/processed.
 
-* If you only need to inference with released models, please run the code below for converting images into tfrecords for inference
+* Depth data obtained by estimating with the pre-trained parameters
+
+```
+cd LeRes
+python ./tools/test_depth_kth.py --load_ckpt res101.pth --backbone resnext101
+cd ..
+```
+
+* Run the code below for converting images into tfrecords, the details can be referred to [SAVP](https://github.com/tolearnmuch/ASVP).
 
 ```
 bash data/kth2tfrecords.sh 
+...
 ```
 
-else, please skip this step and turn to Part 3 for separating active patterns along with non-active ones from videos.
-
-## 3. Active pattern mining
-
-Active pattern mining is necessary only for training and there is no need to do this if only with respective to inference with released model.
-
-* When trying to separate active patterns along with non-active ones from videos, please refer to [details](https://github.com/Anonymous-Submission-ID/Anonymous-Submission/tree/main/separating_active_patterns/).
-
-* After all active patters and non-active patterns are mined, these images are convertted to tfrecords for training.
-
-```
-bash data/kth2tfrecords_ap.sh
-```
-
-The final data could be downloaded from [drive](https://mega.nz/folder/VVlUiZII#kqCMjIRfCoS4IoOuMjTXZg/).
-
-## 4. Inference with released models
+## 3. Inference with released models
 
 For downloading the [released models](https://mega.nz/folder/hA8mBKqA#WcSp7gl70OclmItphc7olA), the released models should be placed as:
 
@@ -103,7 +96,7 @@ and the pre-trained models for baseline should be placed as:
 >
 >——./pretrained/pretrained_models/bair_action_free/savp
 
-### 4.1. Inference on KTH human action
+### 3.1. Inference on KTH human action
 
 * For running our released model, please run
 
@@ -117,7 +110,7 @@ CUDA_VISIBLE_DEVICES=0 python scripts/evaluate.py --input_dir data/kth --dataset
 CUDA_VISIBLE_DEVICES=0 python scripts/evaluate.py --input_dir data/kth --dataset_hparams sequence_length=30 --checkpoint pretrained_models/kth/savp/model-300000 --mode test --results_dir results_test_samples/kth --batch_size 3
 ```
 
-### 4.2. Inference on BAIR action-free robot pushing
+### 3.2. Inference on BAIR action-free robot pushing
 
 * For running our released model, please run
 
@@ -131,7 +124,21 @@ CUDA_VISIBLE_DEVICES=0 python scripts/evaluate.py --input_dir data/bair --datase
 CUDA_VISIBLE_DEVICES=0 python scripts/evaluate.py --input_dir data/bair --dataset_hparams sequence_length=22 --checkpoint pretrained_models/bair_action_free/savp/model-300000 --mode test --results_dir results_test_samples/bair_action_free --batch_size 8
 ```
 
-## 5. Training
+## 4. Training
+
+Active pattern mining is necessary only for training and there is no need to do this if only with respective to inference with released model.
+
+* When trying to separate active patterns along with non-active ones from videos, please refer to [details](https://github.com/Anonymous-Submission-ID/Anonymous-Submission/tree/main/separating_active_patterns/).
+
+* After all active patters and non-active patterns are mined, these images are convertted to tfrecords for training.
+
+```
+bash data/kth2tfrecords_ap.sh
+```
+
+The final data could be downloaded from [drive](https://mega.nz/folder/VVlUiZII#kqCMjIRfCoS4IoOuMjTXZg/).
+
+### 4.1. Training to Disentangle Motion in RGB space
 
 * For training our model with active patterns and non-active patterns on KTH, please run
 
@@ -145,11 +152,17 @@ CUDA_VISIBLE_DEVICES=0,1 python scripts/train.py --input_dir data/kth --dataset 
 CUDA_VISIBLE_DEVICES=0,1 python scripts/train.py --input_dir data/bair --dataset bair --model asvp --model_hparams_dict hparams/bair_action_free/ours_asvp/model_hparams.json --output_dir logs/bair_action_free/ours_asvp
 ```
 
-## 6. More cases
+### 4.2. Training to Disentangle Motion in Depth
+
+
+### 4.3. Motion Complementing and Uncertainty Complementing
+
+
+## 5. More cases
 
 Add additional notes about how to deploy this on a live system
 
-## 7. License
+## 6. License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
