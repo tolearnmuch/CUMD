@@ -8,7 +8,11 @@ This is the released code and models for CUMD.
 
 * 2022-07-11: This project is going to be released, please waiting.
 
-* 2022-07-12: The inference and training is go.
+* 2022-07-12: The depth estimation from videos of RGB is uploaded.
+
+* 2022-07-13: The source code of inference and training is uploaded.
+
+* 2022-07-xx: To be continued.
 
 ## 2. Getting started
 
