@@ -8,7 +8,7 @@ This is the released code and models for CUMD.
 
 * 2022-07-11: This project is going to be released, please waiting.
 
-* 2022-07-xx: .....
+* 2022-07-12: The inference and training is go.
 
 ## 2. Getting started
 
@@ -84,45 +84,33 @@ bash data/kth2tfrecords.sh
 
 ## 3. Inference with released models
 
-For downloading the [released models](https://mega.nz/folder/hA8mBKqA#WcSp7gl70OclmItphc7olA), the released models should be placed as:
+For downloading the [released models](https://mega.nz/folder/pFsBiDwa#3k4qgxMbHidNmEQfTBkqGw), the released models should be placed as:
 
->——./pretrained/pretrained_models/kth/ours_asvp
+>——./pretrained/pretrained_models/kth/ours_cumd
 >
->——./pretrained/pretrained_models/bair_action_free/ours_asvp
+>——./pretrained/pretrained_models/bair_action_free/ours_cumd
 
-and the pre-trained models for baseline should be placed as:
-
->——./pretrained/pretrained_models/kth/savp
->
->——./pretrained/pretrained_models/bair_action_free/savp
+and the pre-trained models for baseline should be referred to [ASVP](https://github.com/tolearnmuch/ASVP).
 
 ### 3.1. Inference on KTH human action
 
 * For running our released model, please run
 
 ```
-CUDA_VISIBLE_DEVICES=0 python scripts/evaluate.py --input_dir data/kth --dataset_hparams sequence_length=30 --checkpoint pretrained_models/kth/ours_asvp/model-300000 --mode test --results_dir results_test_samples/kth --batch_size 3
+CUDA_VISIBLE_DEVICES=1 python scripts/evaluate.py --input_dir data/kth --dataset_hparams sequence_length=30 --checkpoint logs/kth/ours_cumd/model-kth --mode test --results_dir results_test_samples/kth --batch_size 3
 ```
 
-* For running the baseline, please run
-
-```
-CUDA_VISIBLE_DEVICES=0 python scripts/evaluate.py --input_dir data/kth --dataset_hparams sequence_length=30 --checkpoint pretrained_models/kth/savp/model-300000 --mode test --results_dir results_test_samples/kth --batch_size 3
-```
+* For running the baseline, please refer to [ASVP](https://github.com/tolearnmuch/ASVP).
 
 ### 3.2. Inference on BAIR action-free robot pushing
 
 * For running our released model, please run
 
 ```
-CUDA_VISIBLE_DEVICES=0 python scripts/evaluate.py --input_dir data/bair --dataset_hparams sequence_length=22 --checkpoint pretrained_models/bair_action_free/ours_asvp/model-300000 --mode test --results_dir results_test_samples/bair_action_free --batch_size 8
+CUDA_VISIBLE_DEVICES=0 python scripts/evaluate.py --input_dir data/bair --dataset_hparams sequence_length=22 --checkpoint logs/bair_action_free/ours_cumd/model-bair --mode test --results_dir results_test_samples/bair_action_free --batch_size 8
 ```
 
-* For running the baseline, please run
-
-```
-CUDA_VISIBLE_DEVICES=0 python scripts/evaluate.py --input_dir data/bair --dataset_hparams sequence_length=22 --checkpoint pretrained_models/bair_action_free/savp/model-300000 --mode test --results_dir results_test_samples/bair_action_free --batch_size 8
-```
+* For running the baseline, please refer to [ASVP](https://github.com/tolearnmuch/ASVP).
 
 ## 4. Training
 
@@ -140,23 +128,53 @@ The final data could be downloaded from [drive](https://mega.nz/folder/VVlUiZII#
 
 ### 4.1. Training to Disentangle Motion in RGB space
 
-* For training our model with active patterns and non-active patterns on KTH, please run
+* For training to do svp in RGB space with MMDN
 
 ```
-CUDA_VISIBLE_DEVICES=0,1 python scripts/train.py --input_dir data/kth --dataset kth --model asvp --model_hparams_dict hparams/kth/ours_asvp/model_hparams.json --output_dir logs/kth/ours_asvp
+CUDA_VISIBLE_DEVICES=0,1 python scripts/train_vp2.py --input_dir data/kth --dataset kth --model cumd --model_hparams_dict hparams/kth/ours_cumd/model_hparams.json --output_dir logs/kth/save_rgb
 ```
+
+Note that, in this turn of training, all training data should be prepared by RGB videos as in 2.3 which is the same situation as [ASVP](https://github.com/tolearnmuch/ASVP).
 
 * For training our model with active patterns and non-active patterns on BAIR action-free, please run
 
 ```
-CUDA_VISIBLE_DEVICES=0,1 python scripts/train.py --input_dir data/bair --dataset bair --model asvp --model_hparams_dict hparams/bair_action_free/ours_asvp/model_hparams.json --output_dir logs/bair_action_free/ours_asvp
+CUDA_VISIBLE_DEVICES=0,1 python scripts/train.py --input_dir data/bair --dataset bair --model cumd --model_hparams_dict hparams/bair_action_free/ours_cumd/model_hparams.json --output_dir logs/bair_action_free/save_rgb
 ```
 
 ### 4.2. Training to Disentangle Motion in Depth
 
+* For training to do svp in depth space with MMDN
+
+```
+CUDA_VISIBLE_DEVICES=0,1 python scripts/train_vp2.py --input_dir data/kth --dataset kth --model cumd --model_hparams_dict hparams/kth/ours_cumd/model_hparams.json --output_dir logs/kth/save_depth
+```
+
+Note that, in this turn of training, all training data should be prepared by depth videos as in 2.3.
+
+* For training our model with active patterns and non-active patterns on BAIR action-free, please run
+
+```
+CUDA_VISIBLE_DEVICES=0,1 python scripts/train.py --input_dir data/bair --dataset bair --model cumd --model_hparams_dict hparams/bair_action_free/ours_cumd/model_hparams.json --output_dir logs/bair_action_free/save_depth
+```
 
 ### 4.3. Motion Complementing and Uncertainty Complementing
 
+* For training MCN, UCN during prediction.
+
+```
+CUDA_VISIBLE_DEVICES=0,1 python scripts/train_vp2_fusion.py --input_dir data/kth --dataset kth --model cumd --model_hparams_dict hparams/kth/ours_cumd/model_hparams.json --output_dir logs/kth/ours_cumd --checkpoint logs/kth/save_rgb/model-rgb --checkpoint_d logs/kth/save_depth/model-depth
+```
+
+Please rename the pre-trained models in 4.1 and 4.2 as model-rgb and model-depth before training.
+
+* For training on BAIR action-free, please run
+
+```
+CUDA_VISIBLE_DEVICES=0,1 python scripts/train_vp2_fusion.py --input_dir data/bair --dataset bair --model cumd --model_hparams_dict hparams/bair_action_free/ours_cumd/model_hparams.json --output_dir logs/bair_action_free/ours_cumd --checkpoint logs/bair_action_free/save_rgb/model-rgb --checkpoint_d logs/bair_action_free/save_depth/model-depth
+```
+
+It needs to pay attention that, the source code here is not well organized, and the perfect code for training will be released in future.
 
 ## 5. More cases
 
