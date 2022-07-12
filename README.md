@@ -139,7 +139,7 @@ Note that, in this turn of training, all training data should be prepared by RGB
 * For training our model with active patterns and non-active patterns on BAIR action-free, please run
 
 ```
-CUDA_VISIBLE_DEVICES=0,1 python scripts/train.py --input_dir data/bair --dataset bair --model cumd --model_hparams_dict hparams/bair_action_free/ours_cumd/model_hparams.json --output_dir logs/bair_action_free/save_rgb
+CUDA_VISIBLE_DEVICES=0,1 python scripts/train_vp2.py --input_dir data/bair --dataset bair --model cumd --model_hparams_dict hparams/bair_action_free/ours_cumd/model_hparams.json --output_dir logs/bair_action_free/save_rgb
 ```
 
 ### 4.2. Training to Disentangle Motion in Depth
@@ -155,7 +155,7 @@ Note that, in this turn of training, all training data should be prepared by dep
 * For training our model with active patterns and non-active patterns on BAIR action-free, please run
 
 ```
-CUDA_VISIBLE_DEVICES=0,1 python scripts/train.py --input_dir data/bair --dataset bair --model cumd --model_hparams_dict hparams/bair_action_free/ours_cumd/model_hparams.json --output_dir logs/bair_action_free/save_depth
+CUDA_VISIBLE_DEVICES=0,1 python scripts/train_vp2.py --input_dir data/bair --dataset bair --model cumd --model_hparams_dict hparams/bair_action_free/ours_cumd/model_hparams.json --output_dir logs/bair_action_free/save_depth
 ```
 
 ### 4.3. Motion Complementing and Uncertainty Complementing
